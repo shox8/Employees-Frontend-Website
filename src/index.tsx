@@ -8,6 +8,7 @@ import { Login } from "./pages/login";
 import { Register } from "./pages/register";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
+import { ConfigProvider, theme } from "antd";
 
 const router = createBrowserRouter([
   {
@@ -30,7 +31,13 @@ const root = createRoot(container);
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <ConfigProvider
+        theme={{
+          algorithm: theme.darkAlgorithm,
+        }}
+      >
+        <RouterProvider router={router} />
+      </ConfigProvider>
     </Provider>
   </React.StrictMode>
 );
