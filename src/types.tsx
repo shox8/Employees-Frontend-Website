@@ -4,3 +4,10 @@ export type ErrorWithMessage = {
     message: string;
   };
 };
+
+export type User = {
+  email: string;
+  password: string;
+  name: string;
+  createdEmployee: any[];
+};
