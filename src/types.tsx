@@ -11,3 +11,12 @@ export type User = {
   name: string;
   createdEmployee: any[];
 };
+
+export type Employee = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  age: string;
+  userId: string;
+};
