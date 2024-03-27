@@ -1,32 +1,68 @@
-import { Card, Form, Row, Space, Typography } from "antd";
-import { Layout } from "../../components/layout";
-import { CustomInput } from "../../components/custom-input";
-import { PasswordInput } from "../../components/password-input";
+import { useEffect } from "react";
+import { Table } from "antd";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import { CustomButton } from "../../components/custom-button";
+import { Layout } from "../../components/layout";
+import { useGetAllEmployeesQuery } from "../../app/services/employees";
+import { Employee } from "../../types";
 import { Paths } from "../../paths";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../features/auth/authSlice";
+import type { ColumnsType } from "antd/es/table";
 
-export const Register = () => {
+const columns: ColumnsType<Employee> = [
+  {
+    title: "Имя",
+    dataIndex: "firstName",
+    key: "firstName",
+  },
+  {
+    title: "Возраст",
+    dataIndex: "age",
+    key: "age",
+  },
+  {
+    title: "Адрес",
+    dataIndex: "address",
+    key: "address",
+  },
+];
+
+export const Employees = () => {
+  const { data, isLoading } = useGetAllEmployeesQuery();
+  const navigate = useNavigate();
+  const user = useSelector(selectUser);
+
+  useEffect(() => {
+    if (!user) {
+      navigate(Paths.login);
+    }
+  }, [navigate, user]);
+
+  const goToAddUser = () => navigate(Paths.employeeAdd);
+
   return (
     <Layout>
-      <Row align={"middle"} justify={"center"}>
-        <Card title={"Зарегистрируйтесь"} style={{ width: "25rem" }}>
-          <Form onFinish={() => null}>
-            <CustomInput  name="name" placeholder="Имя" />
-            <CustomInput type="email" name="email" placeholder="Email" />
-            <PasswordInput name="password" placeholder="Пароль" />
-            <PasswordInput name="confirmPassword" placeholder="Повторите пароль" />
-            <CustomButton type="primary" htmlType="submit">
-              Зарегистрироваться
-            </CustomButton>
-          </Form>
-          <Space direction="vertical" size="large">
-            <Typography.Text>
-              Уже зарегистрированы? <Link to={Paths.login}>Войдите</Link>
-            </Typography.Text>
-          </Space>
-        </Card>
-      </Row>
+      <CustomButton
+        type="primary"
+        onClick={goToAddUser}
+        icon={<PlusCircleOutlined />}
+      >
+        Добавить
+      </CustomButton>
+      <Table
+        loading={isLoading}
+        dataSource={data}
+        pagination={false}
+        columns={columns}
+        rowKey={(record) => record.id}
+        onRow={(record) => {
+          return {
+            onClick: () => navigate(`${Paths.employee}/${record.id}`),
+          };
+        }}
+      />
     </Layout>
   );
 };
